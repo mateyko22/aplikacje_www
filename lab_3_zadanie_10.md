@@ -1,0 +1,6 @@
+Osoba.objects.all()
+Osoba.objects.get(id=3)
+Osoba.objects.filter(imie__startswith="J")
+Osoba.objects.values('stanowisko__nazwa').distinct()
+Stanowisko.objects.values_list('nazwa').order_by('-nazwa') 
+Osoba.objects.create(imie='Mateusz', nazwisko='Petkiewicz', plec=2, stanowisko=Stanowisko.objects.get(nazwa='Programista'))
