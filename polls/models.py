@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import date
 
 class Stanowisko(models.Model):
     nazwa = models.CharField(max_length=60)
@@ -19,7 +19,7 @@ class Osoba(models.Model):
     nazwisko = models.CharField(max_length=60)
     plec = models.IntegerField(choices=PlecChoices.choices)
     stanowisko = models.ForeignKey(Stanowisko, on_delete=models.CASCADE)
-    data_dodania = models.DateField(auto_now_add=True)
+    data_dodania = models.DateField(default=date.today())
 
     def __str__(self):
         return f'{self.imie} {self.nazwisko}'
