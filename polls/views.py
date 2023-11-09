@@ -3,53 +3,53 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Osoba, Stanowisko
 from .serializers import OsobaSerializer, StanowiskoSerializer
+
 
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def osoba_detail(request, pk):
-
+class OsobaDetail(APIView):
     """
     :param request: obiekt DRF Request
     :param pk: id obiektu Osoba
     :return: Response (with status and/or object/s data)
     """
-    try:
-        osoba = Osoba.objects.get(pk=pk)
-    except Osoba.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    """
-    Zwraca pojedynczy obiekt typu Osoba.
-    """
-    if request.method == 'GET':
-        osoba = Osoba.objects.get(pk=pk)
-        serializer = OsobaSerializer(osoba)
+    def get_object(self, pk):
+        try:
+            return Osoba.objects.get(pk=pk)
+        except Osoba.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk):
+        serializer = OsobaSerializer(self.get_object(pk))
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = OsobaSerializer(osoba, data=request.data)
+    def put(self, request, pk):
+        serializer = OsobaSerializer(self.get_object(pk), data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk):
+        osoba = self.get_object(pk)
         osoba.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET', 'POST'])
-def osoba_list(request):
+class OsobaList(APIView):
     """
     Lista wszystkich obiektów modelu Person.
     """
-    if request.method == 'GET':
+
+    def get(self, request):
         nazwisko = request.query_params.get('nazwisko')
         if nazwisko:
             osoby = Osoba.objects.filter(nazwisko__contains=nazwisko)
@@ -58,7 +58,7 @@ def osoba_list(request):
         serializer = OsobaSerializer(osoby, many=True)
         return Response(serializer.data)
 
-    if request.method == 'POST':
+    def post(self, request):
         serializer = OsobaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
