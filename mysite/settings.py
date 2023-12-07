@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'debug_toolbar',
     'rest_framework',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+GRAPHENE = {
+    "SCHEMA": "mysite.schema.schema"
+}
