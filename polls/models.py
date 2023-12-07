@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 
+
 class Stanowisko(models.Model):
     nazwa = models.CharField(max_length=60)
     opis = models.CharField(max_length=60, null=True, blank=True)
